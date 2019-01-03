@@ -22,7 +22,7 @@ def euclidean(input1, input2):
     return NumPy.linalg.norm(input1-input2)
 
 
-# plotter
+# plotter ( incomplete yet )
 
 
 def plot(data, oldCentroids, clusterData):
@@ -86,7 +86,7 @@ def KMeans(k, iterNumber, data):
 
 
 def execute():
-    KMeans(3, 3, load_dataset_txt('D:/dataset.txt'))
+    KMeans(3, 3, load_dataset_txt('/dataset.txt'))
 
 
 
