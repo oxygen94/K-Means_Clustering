@@ -1,0 +1,94 @@
+import numpy as NumPy
+import matplotlib.pyplot as mpl_pplot
+import matplotlib.animation as mpl_anim
+import pandas as Pandas
+
+# csv loader definition
+
+
+def load_dataset_csv(location):
+        return Pandas.read_csv(location, header=None, index_col=None)
+
+# txt loader definition
+
+
+def load_dataset_txt(location):
+        return NumPy.loadtxt(location)
+
+# euclidean distance function
+
+
+def euclidean(input1, input2):
+    return NumPy.linalg.norm(input1-input2)
+
+
+# plotter
+
+
+def plot(data, oldCentroids, clusterData):
+    clusterColors = [ 'r', 'g', 'b']
+
+# k-Means ( inputs are integer k and dataset data )
+
+
+def KMeans(k, iterNumber, data):
+    # old centroids to hold a history of centroids over iterations
+    oldCentroids = []
+
+    # setting number of Data Points and Dimensions from Data set shape
+    numberOfPoints, numberOfDimensions = data.shape
+
+    # Choosing 3 random points from Data set as initial Centroids
+
+    initialCentroidsIndex = NumPy.random.randint(0, numberOfPoints, size=k)
+    print("Initial Centroids Index Are: ", initialCentroidsIndex)
+
+    # Picking Initial Centroids from 3 random index
+    initialCentroids = data[initialCentroidsIndex]
+
+    # A Matrix to Hold Distance of all Points from Each Initial Centroid
+    Distance_Matrix = NumPy.zeros((numberOfPoints, k))
+
+    # An Array to Hold Which Cluser Each Point Belongs to
+    Belong_To = NumPy.zeros((numberOfPoints, 1))
+
+    # Loop Over all Data Points and "Point Feature will be an Array of 50 Values corresponding to 50 dms
+    for Point_index, Point_feature in enumerate(data):
+
+        # Loop over 3 Initial Centroids and Centroid Feature is an array of 50 values corresponding to 50 dms
+        for Centroid_index, Centroid_feature in enumerate(initialCentroids):
+            Distance_Matrix[Point_index][Centroid_index] = euclidean(Point_feature, Centroid_feature)
+
+        # Creating Belongs to Array
+        Belong_To[Point_index] = NumPy.argmin(Distance_Matrix[Point_index])
+
+    oldCentroids.append(initialCentroids)
+    Centroids = initialCentroids
+
+    for counter in range(1, iterNumber):
+        newCentroidsSet = []
+        for Centroids_index in range(len(Centroids)):
+            Cluster_Members = []
+            for DataPoint_index in range(len(data)):
+                if Belong_To[DataPoint_index] == Centroids_index:
+                    Cluster_Members.append(data[DataPoint_index])
+            newCentroidsSet.append(NumPy.mean(Cluster_Members, axis=0))
+        Centroids = newCentroidsSet
+        oldCentroids.append(Centroids)
+        for Point_index, Point_feature in enumerate(data):
+
+            # Loop over 3 Initial Centroids and Centroid Feature is an array of 50 values corresponding to 50 dms
+            for Centroid_index, Centroid_feature in enumerate(Centroids):
+                Distance_Matrix[Point_index][Centroid_index] = euclidean(Point_feature, Centroid_feature)
+
+            # Creating Belongs to Array
+            Belong_To[Point_index] = NumPy.argmin(Distance_Matrix[Point_index])
+
+
+def execute():
+    KMeans(3, 3, load_dataset_txt('D:/dataset.txt'))
+
+
+
+execute()
+
